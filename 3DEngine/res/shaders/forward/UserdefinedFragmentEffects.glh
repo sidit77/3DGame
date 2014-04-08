@@ -1,0 +1,6 @@
+uniform vec3 basisColor;
+uniform sampler2D diffuse;
+
+vec4 baseColor(vec2 texCoord){
+    return texture2D(diffuse, texCoord.xy) * vec4(basisColor,1);
+}
