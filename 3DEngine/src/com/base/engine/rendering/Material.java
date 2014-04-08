@@ -42,6 +42,6 @@ public class Material{
 		if(result != null)
 			return result;
 
-		return new Texture("test.png");
+		return new Texture();
 	}
 }

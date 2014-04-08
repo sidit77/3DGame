@@ -40,12 +40,12 @@ public class TestGame2 extends Game
         lights.addChild(slo);
 
         Material floorMaterial = new Material();
-        floorMaterial.addTexture("normal", new Texture("stonebrick_normal.png"));
+        floorMaterial.addTexture("normal", new Texture("brick_normal.png"));
         //floorMaterial.addTexture("normal", null);
-        floorMaterial.addTexture("diffuse", new Texture("stonebrick.png"));
+        floorMaterial.addTexture("diffuse", new Texture("brick.png"));
         floorMaterial.addFloat("specularIntensity", 1);
         floorMaterial.addFloat("specularPower", 5);
-        floorMaterial.addVector3f("basisColor", new Vector3f(0,1,1));
+        floorMaterial.addVector3f("basisColor", new Vector3f(1,1,1));
 
         Material modelMaterial = new Material();
         modelMaterial.addTexture("normal", new Texture("stonebrick_normal.png"));

@@ -44,7 +44,7 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normals, vec3 worldPos, vec2
     
     vec3 finalNormal = vec3(0,0,0);
     
-    if(NormalMap == vec3(0,0,0)){
+    if(NormalMap == vec3(1,1,1)){
         finalNormal = normals;
     }else{
         finalNormal = normalize(NormalMap * 2.0 - 1.0);
