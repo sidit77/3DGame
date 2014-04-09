@@ -39,7 +39,7 @@ public class Texture{
 
         for(int x = 0; x < 32; x++){
             for(int y = 0; y < 32; y++){
-                image.setRGB(x, y, new Color(1,1,1).getRGB());
+                image.setRGB(x, y, new Color(1f,1f,1f).getRGB());
             }
         }
 
