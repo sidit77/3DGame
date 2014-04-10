@@ -6,6 +6,7 @@ import com.base.engine.core.math.Matrix4f;
 import com.base.engine.core.math.Vector2f;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.Window;
+import org.pmw.tinylog.Logger;
 
 public class Camera extends GameComponent
 {
@@ -99,7 +100,7 @@ public class Camera extends GameComponent
                 if(getTransform().getRot().getForward().getY() <= -0.99f && deltaPos.getY() > 0){
                     getTransform().rotate(getTransform().getRot().getRight(), (float) Math.toRadians(-deltaPos.getY()));
                 }else if(getTransform().getRot().getForward().getY() >= 0.99f && deltaPos.getY() < 0){
-                    System.out.println("dd");
+                    Logger.debug("CAMERA: you turned to fast!");
                     getTransform().rotate(getTransform().getRot().getRight(), (float) Math.toRadians(-deltaPos.getY()));
                 }
 

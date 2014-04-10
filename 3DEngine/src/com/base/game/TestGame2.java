@@ -10,14 +10,11 @@ import com.base.engine.core.math.Quaternion;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.*;
 
-public class TestGame2 extends Game
-{
-    GameObject root = new GameObject();
+public class TestGame2 extends Game{
     Material floorMaterial = new Material();
 
-    public void init()
-    {
-        root.addChild(new GameObject().addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)));
+    public void init(){
+        getRootObject().addChild(new GameObject().addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)));
 
         GameObject lights  = new GameObject();
 
@@ -25,7 +22,6 @@ public class TestGame2 extends Game
         DirectionalLight dl = new DirectionalLight(new Vector3f(1,1,1), 0.7f);
         dlo.addComponent(dl);
         dl.getTransform().setRot(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-20)));
-        //dl.getTransform().setPos(new Vector3f(0,10,0));
         lights.addChild(dlo);
 
         GameObject plo = new GameObject();
@@ -48,26 +44,26 @@ public class TestGame2 extends Game
         floorMaterial.addVector3f("basisColor", new Vector3f(1,1,1));
 
         Material modelMaterial = new Material();
-        modelMaterial.addTexture("diffuse", new Texture("bedrock.png"));
+        //modelMaterial.addTexture("diffuse", new Texture("bedrock.png"));
+        //modelMaterial.addTexture("normal", new Texture("bedrock_normal.png"));
         modelMaterial.addFloat("specularIntensity", 1);
         modelMaterial.addFloat("specularPower", 8);
-        modelMaterial.addVector3f("basisColor", new Vector3f(1,1,1));
+        modelMaterial.addVector3f("basisColor", new Vector3f(1,1,0));
 
         GameObject model = new GameObject();
         Mesh modelMesh = new Mesh("monkey3.obj");
         MeshRenderer meshRenderer = new MeshRenderer(modelMesh, modelMaterial);
         model.addComponent(meshRenderer);
         model.getTransform().setPos(new Vector3f(1,-2,2));
-        root.addChild(model);
+        getRootObject().addChild(model);
 
         GameObject terrain = new GameObject();
-        Terrain t = new Terrain(60, 10, floorMaterial, new TestGenerator());//("height2.jpg", 8, 1, floorMaterial);//
+        Terrain t = new Terrain(60, 5, floorMaterial, new TestGenerator());//("height2.jpg", 8, 1, floorMaterial);//
         terrain.addComponent(t);
         terrain.getTransform().setPos(new Vector3f(-30, -4, -30));
-        root.addChild(terrain);
+        getRootObject().addChild(terrain);
 
-        root.addChild(lights);
-        addObject(root);
+        getRootObject().addChild(lights);
     }
 
     @Override
@@ -92,6 +88,10 @@ public class TestGame2 extends Game
         if(Input.getKeyDown(Input.KEY_5)){
             floorMaterial.addTexture("normal", new Texture("netherbrick_normal.png"));
             floorMaterial.addTexture("diffuse", new Texture("netherbrick.png"));
+        }
+        if(Input.getKeyDown(Input.KEY_6)){
+            floorMaterial.addTexture("normal", new Texture("diamondblock_normal.png"));
+            floorMaterial.addTexture("diffuse", new Texture("diamondblock.png"));
         }
     }
 }

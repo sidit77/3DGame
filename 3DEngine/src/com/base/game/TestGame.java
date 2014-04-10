@@ -14,11 +14,9 @@ import com.base.engine.rendering.Window;
 
 public class TestGame extends Game{
 
-    GameObject root = new GameObject();
-
 	public void init(){
 
-        root.addChild(new GameObject().addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)));
+        getRootObject().addChild(new GameObject().addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)));
 
         GameObject lights  = new GameObject();
 
@@ -29,19 +27,19 @@ public class TestGame extends Game{
         lights.addChild(dlo);
 
         Material floorMaterial = new Material();
-            floorMaterial.addTexture("diffuse", new Texture("grass.png"));
+            floorMaterial.addTexture("diffuse", new Texture("gravel.png"));
+            floorMaterial.addTexture("normal", new Texture("gravel_normal.png"));
             floorMaterial.addFloat("specularIntensity", 1);
             floorMaterial.addFloat("specularPower", 8);
-            floorMaterial.addVector3f("basisColor", new Vector3f(0,1,0));
+            floorMaterial.addVector3f("basisColor", new Vector3f(1,1,1));
 
         GameObject terrain = new GameObject();
         Terrain t = new Terrain(512, 1, floorMaterial, new SimplexGenerator(1000, 0.35, (int) System.currentTimeMillis(), 150));//("height2.jpg", 8, 1, floorMaterial);//
         terrain.addComponent(t);
         terrain.getTransform().setPos(new Vector3f(-128, -20, -128));
 
-        root.addChild(terrain);
+        getRootObject().addChild(terrain);
 
-        root.addChild(lights);
-        addObject(root);
+        getRootObject().addChild(lights);
 	}
 }

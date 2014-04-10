@@ -88,10 +88,11 @@ public class OBJModel{
 			else
 				currentTexCoord = new Vector2f(0,0);
 
-			if(hasNormals)
-				currentNormal = normals.get(currentIndex.normalIndex);
-			else
-				currentNormal = new Vector3f(0,0,0);
+			if(hasNormals) {
+                currentNormal = normals.get(currentIndex.normalIndex);
+            }else {
+                currentNormal = new Vector3f(0, 0, 0);
+            }
 
 			Integer modelVertexIndex = resultIndexMap.get(currentIndex);
 

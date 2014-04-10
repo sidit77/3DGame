@@ -42,7 +42,7 @@ public class Mesh{
 	
 	public Mesh(Vertex[] vertices, int[] indices, boolean calcNormals){
 		fileName = "";
-		addVertices(vertices, indices, calcNormals);
+		addVertices(vertices, indices, calcNormals, calcNormals);
 	}
 
 	@Override
@@ -52,10 +52,14 @@ public class Mesh{
 		}
 	}
 	
-	private void addVertices(Vertex[] vertices, int[] indices, boolean calcNormals){
+	private void addVertices(Vertex[] vertices, int[] indices, boolean calcNormals, boolean calcTangents){
 		if(calcNormals){
 			calcNormals(vertices, indices);
 		}
+
+        if(calcTangents){
+            calcTangents(vertices, indices);
+        }
 
 		resource = new MeshResource(indices.length);
 		
@@ -70,11 +74,13 @@ public class Mesh{
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
 
         glBindBuffer(GL_ARRAY_BUFFER, resource.getVbo());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, Vertex.SIZE * 4, 0);
         glVertexAttribPointer(1, 2, GL_FLOAT, false, Vertex.SIZE * 4, 12);
         glVertexAttribPointer(2, 3, GL_FLOAT, false, Vertex.SIZE * 4, 20);
+        glVertexAttribPointer(3, 3, GL_FLOAT, false, Vertex.SIZE * 4, 32);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, resource.getIbo());
         glDrawElements(GL_TRIANGLES, resource.getSize(), GL_UNSIGNED_INT, 0);
@@ -82,6 +88,7 @@ public class Mesh{
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
 	}
 	
 	private void calcNormals(Vertex[] vertices, int[] indices){
@@ -108,6 +115,44 @@ public class Mesh{
 
         Logger.trace("NORMALS: Finished to calculate normals");
 	}
+
+    private void calcTangents(Vertex[] vertices, int[] indices){
+
+        Logger.trace("NORMALS: Started to calculate tangents");
+
+        for(int i = 0; i < indices.length; i += 3){
+            Vertex v0 = vertices[indices[i]];
+            Vertex v1 = vertices[indices[i+1]];
+            Vertex v2 = vertices[indices[i+2]];
+
+            Vector3f edge1 = v1.getPos().sub(v0.getPos());
+            Vector3f edge2 = v2.getPos().sub(v0.getPos());
+
+            float deltaU1 = v1.getTexCoord().getX() - v0.getTexCoord().getX();
+            float deltaV1 = v1.getTexCoord().getY() - v0.getTexCoord().getY();
+            float deltaU2 = v2.getTexCoord().getX() - v0.getTexCoord().getX();
+            float deltaV2 = v2.getTexCoord().getY() - v0.getTexCoord().getY();
+
+            float f = 1.0f / (deltaU1 * deltaV2 - deltaU2 * deltaV1);
+
+            Vector3f tangent = new Vector3f(0,0,0);
+
+            tangent.setX(f * (deltaV2 * edge1.getX() - deltaV1 * edge2.getX()));
+            tangent.setY(f * (deltaV2 * edge1.getY() - deltaV1 * edge2.getY()));
+            tangent.setZ(f * (deltaV2 * edge1.getZ() - deltaV1 * edge2.getZ()));
+
+            v0.setTangent(tangent);
+            v1.setTangent(tangent);
+            v2.setTangent(tangent);
+
+        }
+
+        for(int i = 0; i < vertices.length; i++)
+            vertices[i].setTangent(vertices[i].getTangent().normalized());
+
+        Logger.trace("NORMALS: Finished to calculate tangents");
+
+    }
 	
 	private Mesh loadMesh(String fileName){
 
@@ -124,14 +169,15 @@ public class Mesh{
 
 		OBJModel test = new OBJModel("./res/models/" + fileName);
 		IndexedModel model = test.toIndexedModel();
-		model.calcNormals();
 
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 
 		for(int i = 0; i < model.getPositions().size(); i++){
 			vertices.add(new Vertex(model.getPositions().get(i),
-					model.getTexCoords().get(i),
-					model.getNormals().get(i)));
+					                model.getTexCoords().get(i),
+					                model.getNormals().get(i),
+                                    new Vector3f(0,0,0)
+            ));
 		}
 
 		Vertex[] vertexData = new Vertex[vertices.size()];
@@ -140,7 +186,7 @@ public class Mesh{
 		Integer[] indexData = new Integer[model.getIndices().size()];
 		model.getIndices().toArray(indexData);
 
-		addVertices(vertexData, Util.toIntArray(indexData), false);
+		addVertices(vertexData, Util.toIntArray(indexData), false, true);
 
         Logger.debug("MODEL: Finished to read model from file");
 

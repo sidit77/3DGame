@@ -137,7 +137,6 @@ public class Texture{
         Logger.debug("TEXTURE: Starting to load texture from a BufferedImage");
 
         try{
-            //BufferedImage image = ImageIO.read(new File("./res/textures/" + fileName));
             int[] pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
 
             ByteBuffer buffer = Util.createByteBuffer(image.getHeight() * image.getWidth() * 4);

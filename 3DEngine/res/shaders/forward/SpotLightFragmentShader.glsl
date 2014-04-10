@@ -5,10 +5,11 @@
 in vec2 texCoord0;
 in vec3 normal0;
 in vec3 worldPos0;
+in vec3 tangent0;
 
 uniform SpotLight P_spotLight;
 
 void main()
 {
-    gl_FragColor = baseColor(texCoord0) * CalcSpotLight(P_spotLight, normalize(normal0), worldPos0, texCoord0);
+    gl_FragColor = baseColor(texCoord0) * CalcSpotLight(P_spotLight, normalize(normal0), worldPos0, texCoord0, tangent0);
 }

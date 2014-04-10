@@ -22,11 +22,7 @@ public abstract class Game{
 		renderingEngine.render(getRootObject());
 	}
 
-	public void addObject(GameObject object){
-		getRootObject().addChild(object);
-	}
-
-	private GameObject getRootObject(){
+	public GameObject getRootObject(){
 		return root;
 	}
 
