@@ -41,14 +41,14 @@ public class TestGame2 extends Game{
         floorMaterial.addTexture("diffuse", new Texture("brick.png"));
         floorMaterial.addFloat("specularIntensity", 1);
         floorMaterial.addFloat("specularPower", 5);
-        floorMaterial.addVector3f("basisColor", new Vector3f(1,1,1));
+        floorMaterial.addVector3f("diffuseColor", new Vector3f(1,1,1));
 
         Material modelMaterial = new Material();
         //modelMaterial.addTexture("diffuse", new Texture("bedrock.png"));
         //modelMaterial.addTexture("normal", new Texture("bedrock_normal.png"));
         modelMaterial.addFloat("specularIntensity", 1);
         modelMaterial.addFloat("specularPower", 8);
-        modelMaterial.addVector3f("basisColor", new Vector3f(1,1,0));
+        modelMaterial.addVector3f("diffuseColor", new Vector3f(1,1,0));
 
         GameObject model = new GameObject();
         Mesh modelMesh = new Mesh("monkey3.obj");
@@ -58,7 +58,7 @@ public class TestGame2 extends Game{
         getRootObject().addChild(model);
 
         GameObject terrain = new GameObject();
-        Terrain t = new Terrain(60, 5, floorMaterial, new TestGenerator());//("height2.jpg", 8, 1, floorMaterial);//
+        Terrain t = new Terrain(60, 5, floorMaterial, new TestGenerator(), new TestGenerator());
         terrain.addComponent(t);
         terrain.getTransform().setPos(new Vector3f(-30, -4, -30));
         getRootObject().addChild(terrain);

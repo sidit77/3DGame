@@ -54,7 +54,7 @@ public class Camera extends GameComponent
 		
 		if(Input.getKey(Input.KEY_W)) {
             if (Input.getKey(Input.KEY_LSHIFT)) {
-                move(getTransform().getRot().getForward(), movAmt * 5);
+                move(getTransform().getRot().getForward(), movAmt * 10);
             } else {
                 move(getTransform().getRot().getForward(), movAmt);
             }
@@ -62,7 +62,7 @@ public class Camera extends GameComponent
 
 		if(Input.getKey(Input.KEY_S)) {
             if (Input.getKey(Input.KEY_LSHIFT)) {
-                move(getTransform().getRot().getForward(), -movAmt * 5);
+                move(getTransform().getRot().getForward(), -movAmt * 10);
             } else {
                 move(getTransform().getRot().getForward(), -movAmt);
             }
@@ -70,7 +70,7 @@ public class Camera extends GameComponent
 
 		if(Input.getKey(Input.KEY_A)) {
             if (Input.getKey(Input.KEY_LSHIFT)) {
-                move(getTransform().getRot().getLeft(), movAmt * 5);
+                move(getTransform().getRot().getLeft(), movAmt * 10);
             } else {
                 move(getTransform().getRot().getLeft(), movAmt);
             }
@@ -78,7 +78,7 @@ public class Camera extends GameComponent
 
 		if(Input.getKey(Input.KEY_D)) {
             if (Input.getKey(Input.KEY_LSHIFT)) {
-                move(getTransform().getRot().getRight(), movAmt * 5);
+                move(getTransform().getRot().getRight(), movAmt * 10);
             } else {
                 move(getTransform().getRot().getRight(), movAmt);
             }

@@ -46,6 +46,9 @@ public class Util{
             buffer.put(vertices[i].getTangent().getX());
             buffer.put(vertices[i].getTangent().getY());
             buffer.put(vertices[i].getTangent().getZ());
+            buffer.put(vertices[i].getSplattingColor().getX());
+            buffer.put(vertices[i].getSplattingColor().getY());
+            buffer.put(vertices[i].getSplattingColor().getZ());
 		}
 		
 		buffer.flip();

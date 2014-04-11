@@ -75,12 +75,14 @@ public class Mesh{
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
         glEnableVertexAttribArray(3);
+        glEnableVertexAttribArray(4);
 
         glBindBuffer(GL_ARRAY_BUFFER, resource.getVbo());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, Vertex.SIZE * 4, 0);
         glVertexAttribPointer(1, 2, GL_FLOAT, false, Vertex.SIZE * 4, 12);
         glVertexAttribPointer(2, 3, GL_FLOAT, false, Vertex.SIZE * 4, 20);
         glVertexAttribPointer(3, 3, GL_FLOAT, false, Vertex.SIZE * 4, 32);
+        glVertexAttribPointer(4, 3, GL_FLOAT, false, Vertex.SIZE * 4, 44);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, resource.getIbo());
         glDrawElements(GL_TRIANGLES, resource.getSize(), GL_UNSIGNED_INT, 0);
@@ -89,6 +91,7 @@ public class Mesh{
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
         glDisableVertexAttribArray(3);
+        glDisableVertexAttribArray(4);
 	}
 	
 	private void calcNormals(Vertex[] vertices, int[] indices){
@@ -141,9 +144,9 @@ public class Mesh{
             tangent.setY(f * (deltaV2 * edge1.getY() - deltaV1 * edge2.getY()));
             tangent.setZ(f * (deltaV2 * edge1.getZ() - deltaV1 * edge2.getZ()));
 
-            v0.setTangent(tangent);
-            v1.setTangent(tangent);
-            v2.setTangent(tangent);
+            v0.setTangent(v0.getTangent().add(tangent));
+            v1.setTangent(v1.getTangent().add(tangent));
+            v2.setTangent(v2.getTangent().add(tangent));
 
         }
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class TerrainUtil {
 
-    public static Vertex[] createVertices(float x, float z, int size, float res, TerrainGenerator generator){
+    public static Vertex[] createVertices(float x, float z, int size, float res, TerrainGenerator generator, ColorGenerator generator2){
 
         Logger.debug(">VERTICES: Started to create the vertices");
 
@@ -18,7 +18,10 @@ public class TerrainUtil {
 
         for (float sx = 0; sx < size; sx += res) {
             for (float sz = 0; sz < size; sz += res) {
-                verticesList.add(new Vertex(new Vector3f(x + sx, generator.getHeight(x + sx, z + sz, res), z + sz), new Vector2f(sx, sz)));
+
+                float y = generator.getHeight(x + sx, z + sz, res);
+
+                verticesList.add(new Vertex(new Vector3f(x + sx, y, z + sz), new Vector2f(sx, sz), new Vector3f(0,0,0), new Vector3f(0,0,0), generator2.getTextureSplatting(x + sx, y, z + sz)));
             }
         }
 

@@ -1,6 +1,16 @@
-uniform vec3 basisColor;
+uniform vec3 diffuseColor;
+uniform vec3 diffuse2Color;
+uniform vec3 diffuse3Color;
+uniform vec3 diffuse4Color;
 uniform sampler2D diffuse;
+uniform sampler2D diffuse2;
+uniform sampler2D diffuse3;
+uniform sampler2D diffuse4;
 
-vec4 baseColor(vec2 texCoord){
-    return texture2D(diffuse, texCoord.xy) * vec4(basisColor,1);
+vec4 baseColor(vec2 texCoord, vec3 splattingColor){
+    vec4 textureColor = texture2D(diffuse, texCoord.xy) * vec4(diffuseColor, 1);
+    textureColor = mix(textureColor, texture2D(diffuse2, texCoord.xy) * vec4(diffuse2Color, 1), splattingColor.r);
+    textureColor = mix(textureColor, texture2D(diffuse3, texCoord.xy) * vec4(diffuse3Color, 1), splattingColor.g);
+    textureColor = mix(textureColor, texture2D(diffuse4, texCoord.xy) * vec4(diffuse4Color, 1), splattingColor.b);
+    return textureColor;
 }

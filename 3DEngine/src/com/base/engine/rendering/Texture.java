@@ -39,7 +39,7 @@ public class Texture{
 
         for(int x = 0; x < 32; x++){
             for(int y = 0; y < 32; y++){
-                image.setRGB(x, y, new Color(1f,1f,1f).getRGB());
+                image.setRGB(x, y, new Color(1.0f, 1.0f, 1.0f).getRGB());
             }
         }
 
@@ -189,8 +189,18 @@ public class Texture{
             return 0;
         }else if(name.equalsIgnoreCase("normal")){
             return 1;
-        } else if(name.equalsIgnoreCase("bump")){
+        }else if(name.equalsIgnoreCase("diffuse2")){
             return 2;
+        }else if(name.equalsIgnoreCase("normal2")){
+            return 3;
+        }else if(name.equalsIgnoreCase("diffuse3")){
+            return 4;
+        }else if(name.equalsIgnoreCase("normal3")){
+            return 5;
+        }else if(name.equalsIgnoreCase("diffuse4")){
+            return 6;
+        }else if(name.equalsIgnoreCase("normal4")){
+            return 7;
         }
         return 0;
     }
