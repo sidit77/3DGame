@@ -3,6 +3,7 @@ package com.base.engine.core;
 import com.base.engine.rendering.RenderingEngine;
 import com.base.engine.rendering.Window;
 import org.lwjgl.Sys;
+import org.lwjgl.opengl.GL11;
 import org.pmw.tinylog.Logger;
 
 public class CoreEngine{
@@ -22,6 +23,7 @@ public class CoreEngine{
     private int fps;
 
     private boolean wireframe;
+    private boolean fullscreen;
 	
 	public CoreEngine(int width, int height, int framerate, boolean vsync, boolean resizeable, Game game){
 
@@ -78,6 +80,13 @@ public class CoreEngine{
                 renderingEngine.setWireframe(!wireframe);
                 Logger.info("Wireframe mode was set to " + !wireframe);
                 wireframe = !wireframe;
+            }
+            if(Input.getKeyDown(Input.KEY_F2)){
+                Window.setFullscreen(!fullscreen);
+                Logger.info("Fullscreen mode was set to " + !fullscreen);
+                GL11.glViewport(0,0,Window.getWidth(), Window.getHeight());
+                renderingEngine.getMainCamera().setAspect((float) Window.getWidth() / (float) Window.getHeight());
+                fullscreen = !fullscreen;
             }
 			game.input((float)delta/1000);
 			Input.update();

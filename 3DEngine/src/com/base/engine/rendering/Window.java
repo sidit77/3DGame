@@ -6,10 +6,18 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.pmw.tinylog.Logger;
+
+import java.awt.*;
 
 public class Window {
+
+    private static int width, height;
+
 	public static void createWindow(int width, int height, String title){
 		Display.setTitle(title);
+        Window.width = width;
+        Window.height = height;
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.create();
@@ -19,7 +27,60 @@ public class Window {
 			e.printStackTrace();
         }
 	}
-	
+
+    public static void setFullscreen(boolean enabled){
+
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+
+        if ((Display.getDisplayMode().getWidth() == dimension.width) &&
+                (Display.getDisplayMode().getHeight() == dimension.height) &&
+                (Display.isFullscreen() == enabled)) {
+            return;
+        }
+
+        try {
+            DisplayMode targetDisplayMode = null;
+
+            if (enabled) {
+                DisplayMode[] modes = Display.getAvailableDisplayModes();
+                int freq = 0;
+
+                for (int i=0;i<modes.length;i++) {
+                    DisplayMode current = modes[i];
+
+                    if ((current.getWidth() == dimension.width) && (current.getHeight() == dimension.height)) {
+                        if ((targetDisplayMode == null) || (current.getFrequency() >= freq)) {
+                            if ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel())) {
+                                targetDisplayMode = current;
+                                freq = targetDisplayMode.getFrequency();
+                            }
+                        }
+
+                        if ((current.getBitsPerPixel() == Display.getDesktopDisplayMode().getBitsPerPixel()) &&
+                                (current.getFrequency() == Display.getDesktopDisplayMode().getFrequency())) {
+                            targetDisplayMode = current;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                targetDisplayMode = new DisplayMode(width,height);
+            }
+
+            if (targetDisplayMode == null) {
+                Logger.warn("Failed to find value mode: " + width + "x" + height + " fs=" + enabled);
+                return;
+            }
+
+            Display.setDisplayMode(targetDisplayMode);
+            Display.setFullscreen(enabled);
+
+        } catch (LWJGLException e) {
+            Logger.error("Unable to setup mode " + width + "x" + height + " fullscreen=" + enabled + e);
+        }
+
+    }
+
 	public static void render(){
 		Display.update();
 	}
