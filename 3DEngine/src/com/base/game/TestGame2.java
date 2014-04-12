@@ -42,6 +42,7 @@ public class TestGame2 extends Game{
         floorMaterial.addFloat("specularIntensity", 1);
         floorMaterial.addFloat("specularPower", 5);
         floorMaterial.addVector3f("diffuseColor", new Vector3f(1,1,1));
+        floorMaterial.addFloat("transparency", 1f);
 
         Material modelMaterial = new Material();
         //modelMaterial.addTexture("diffuse", new Texture("bedrock.png"));
@@ -49,11 +50,14 @@ public class TestGame2 extends Game{
         modelMaterial.addFloat("specularIntensity", 1);
         modelMaterial.addFloat("specularPower", 8);
         modelMaterial.addVector3f("diffuseColor", new Vector3f(1,1,0));
+        modelMaterial.addFloat("transparency", 0.4f);
 
         GameObject model = new GameObject();
         Mesh modelMesh = new Mesh("monkey3.obj");
         MeshRenderer meshRenderer = new MeshRenderer(modelMesh, modelMaterial);
         model.addComponent(meshRenderer);
+        model.addComponent(new LookAtComponent());
+        model.addComponent(new MoveSmoothForwardComponent(0.07f, 5f));
         model.getTransform().setPos(new Vector3f(1,-2,2));
         getRootObject().addChild(model);
 
@@ -64,6 +68,7 @@ public class TestGame2 extends Game{
         getRootObject().addChild(terrain);
 
         getRootObject().addChild(lights);
+
     }
 
     @Override
@@ -92,6 +97,18 @@ public class TestGame2 extends Game{
         if(Input.getKeyDown(Input.KEY_6)){
             floorMaterial.addTexture("normal", new Texture("diamondblock_normal.png"));
             floorMaterial.addTexture("diffuse", new Texture("diamondblock.png"));
+        }
+        if(Input.getKeyDown(Input.KEY_7)){
+            floorMaterial.addTexture("normal", new Texture("lapis_normal.png"));
+            floorMaterial.addTexture("diffuse", new Texture("lapis.png"));
+        }
+        if(Input.getKeyDown(Input.KEY_8)){
+            floorMaterial.addTexture("normal", new Texture("netherrack_normal.png"));
+            floorMaterial.addTexture("diffuse", new Texture("netherrack.png"));
+        }
+        if(Input.getKeyDown(Input.KEY_9)){
+            floorMaterial.addTexture("normal", new Texture("quartzblockchiseled2_normal.png"));
+            floorMaterial.addTexture("diffuse", new Texture("quartzblockchiseled2.png"));
         }
     }
 }

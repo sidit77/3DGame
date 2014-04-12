@@ -51,23 +51,33 @@ public class RenderingEngine{
     }
 
 	public void render(GameObject object){
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-		object.render(forwardAmbient, this);
+        for(int i = 10; i > 0; i -= 1) {
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-        GL11.glDepthMask(false);
-        GL11.glDepthFunc(GL11.GL_EQUAL);
+            float trans = (float)i/10;
 
-		for(BaseLight light : lights){
-			activeLight = light;
-			object.render(light.getShader(), this);
-		}
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        GL11.glDepthFunc(GL11.GL_LESS);
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
+            object.render(forwardAmbient, this, trans);
+
+
+            //GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+            GL11.glDepthMask(false);
+            GL11.glDepthFunc(GL11.GL_EQUAL);
+
+            for (BaseLight light : lights) {
+                activeLight = light;
+                object.render(light.getShader(), this, trans);
+            }
+
+            GL11.glDepthFunc(GL11.GL_LESS);
+            GL11.glDepthMask(true);
+            GL11.glDisable(GL11.GL_BLEND);
+        }
+
 	}
 
 	public static String getOpenGLVersion(){

@@ -19,7 +19,7 @@ public abstract class Game{
 	}
 
 	public void render(RenderingEngine renderingEngine){
-		renderingEngine.render(getRootObject());
+        renderingEngine.render(getRootObject());
 	}
 
 	public GameObject getRootObject(){

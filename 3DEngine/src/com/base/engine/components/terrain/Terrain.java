@@ -14,7 +14,6 @@ public class Terrain extends GameComponent{
     private Material material;
 
     public Terrain(float x, float z, String fileName, float sen, float res, Material material, ColorGenerator generator){
-
         Logger.debug("TERRAIN: Stating to create terrain on " + x + "/" + z + " from heightmap " + fileName);
 
         if(res < 1.0f){
@@ -35,7 +34,7 @@ public class Terrain extends GameComponent{
     }
 
     public Terrain(int size, float res, Material material, TerrainGenerator generator, ColorGenerator generator2){
-       this(0, 0, size, res, material, generator, generator2);
+        this(0, 0, size, res, material, generator, generator2);
     }
 
     public Terrain(float x, float z, int size, float res, Material material, TerrainGenerator generator, ColorGenerator generator2){
@@ -50,5 +49,10 @@ public class Terrain extends GameComponent{
         shader.bind();
         shader.updateUniforms(getTransform(), material, renderingEngine);
         mesh.draw();
+    }
+
+    @Override
+    public float getTransparencyLevel() {
+        return material.getFloat("transparency");
     }
 }

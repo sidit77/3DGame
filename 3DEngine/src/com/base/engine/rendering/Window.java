@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.PixelFormat;
 import org.pmw.tinylog.Logger;
 
 import java.awt.*;
@@ -14,13 +15,13 @@ public class Window {
 
     private static int width, height;
 
-	public static void createWindow(int width, int height, String title){
+	public static void createWindow(int width, int height, int samples, String title){
 		Display.setTitle(title);
         Window.width = width;
         Window.height = height;
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
-			Display.create();
+			Display.create(new PixelFormat().withSamples(samples));
 			Keyboard.create();
 			Mouse.create();
 		} catch (LWJGLException e) {

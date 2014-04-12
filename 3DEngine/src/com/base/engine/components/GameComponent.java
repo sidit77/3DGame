@@ -10,7 +10,7 @@ public abstract class GameComponent
 {
 	private GameObject parent;
 
-	public void input(float delta) {}
+    public void input(float delta) {}
 	public void update(float delta) {}
 	public void render(Shader shader, RenderingEngine renderingEngine) {}
 
@@ -25,5 +25,9 @@ public abstract class GameComponent
 	}
 
 	public void addToEngine(CoreEngine engine) {}
+
+    public float getTransparencyLevel() {
+        return 1f;
+    }
 }
 

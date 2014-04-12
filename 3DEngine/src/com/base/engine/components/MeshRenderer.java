@@ -1,6 +1,5 @@
 package com.base.engine.components;
 
-import com.base.engine.core.Transform;
 import com.base.engine.rendering.Material;
 import com.base.engine.rendering.Mesh;
 import com.base.engine.rendering.RenderingEngine;
@@ -24,4 +23,10 @@ public class MeshRenderer extends GameComponent
 		shader.updateUniforms(getTransform(), material, renderingEngine);
 		mesh.draw();
 	}
+
+    @Override
+    public float getTransparencyLevel() {
+
+        return material.getFloat("transparency");
+    }
 }

@@ -18,7 +18,7 @@ public class HeightMapGenerator implements TerrainGenerator{
         this.sen = sen;
 
         try {
-            this.image = ImageIO.read(new File("./res/maps/" + fileName));
+            this.image = ImageIO.read(new File("res/maps/" + fileName));
 
             if(image.getHeight() != image.getWidth()){
                 Logger.error("Error, only quadratic heighmaps are allowed");

@@ -19,7 +19,7 @@ public class Starter {
 
     private static JDialog dialog;
 
-    private static int height, width, framerate;
+    private static int height, width, framerate, samples;
     private static boolean vsync, resizeable;
     private static Game game;
 
@@ -84,13 +84,22 @@ public class Starter {
         dialog.add(fpsField);
 
 
+        JLabel sampleLabel = new JLabel("AA: ");
+        sampleLabel.setBounds(30,150,50,25);
+        dialog.add(sampleLabel);
+
+        JTextField sampleField = new JTextField("2");
+        sampleField.setBounds(80, 150, 100, 25);
+        dialog.add(sampleField);
+
+
         JCheckBox vsyncCheckBox = new JCheckBox("VSync");
-        vsyncCheckBox.setBounds(30,150,100,25);
+        vsyncCheckBox.setBounds(30,180,100,25);
         vsyncCheckBox.setSelected(true);
         dialog.add(vsyncCheckBox);
 
         JCheckBox resizeableCheckBox = new JCheckBox("Resizeable");
-        resizeableCheckBox.setBounds(30,180,100,25);
+        resizeableCheckBox.setBounds(30,210,100,25);
         dialog.add(resizeableCheckBox);
 
 
@@ -99,7 +108,7 @@ public class Starter {
         games.put("TestGame2", new TestGame2());
         Object[] options = games.keySet().toArray();
         JComboBox gamesSelection = new JComboBox(options);
-        gamesSelection.setBounds(30, 220, 100, 25);
+        gamesSelection.setBounds(30, 250, 100, 25);
         dialog.add(gamesSelection);
 
         dialog.setVisible(true);
@@ -108,6 +117,7 @@ public class Starter {
             width = Integer.parseInt(widthField.getText());
             height = Integer.parseInt(heightField.getText());
             framerate = Integer.parseInt(fpsField.getText());
+            samples = Integer.parseInt(sampleField.getText());
             vsync = vsyncCheckBox.isSelected();
             resizeable = resizeableCheckBox.isSelected();
             game = games.get(gamesSelection.getSelectedItem());
@@ -117,7 +127,7 @@ public class Starter {
             dialog.setVisible(true);
         }
 
-        CoreEngine engine = new CoreEngine(width, height, framerate, vsync, resizeable, game);
+        CoreEngine engine = new CoreEngine(width, height, framerate, samples, vsync, resizeable, game);
         engine.createWindow("3D Game Engine");
         engine.start();
 

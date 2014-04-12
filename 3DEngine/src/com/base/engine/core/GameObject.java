@@ -27,7 +27,7 @@ public class GameObject{
 	}
 
 	public GameObject addComponent(GameComponent component){
-		components.add(component);
+        components.add(component);
 		component.setParent(this);
 
 		return this;
@@ -51,12 +51,15 @@ public class GameObject{
 			child.update(delta);
 	}
 
-	public void render(Shader shader, RenderingEngine renderingEngine){
-		for(GameComponent component : components)
-			component.render(shader, renderingEngine);
+	public void render(Shader shader, RenderingEngine renderingEngine, float transparencyLevel){
+		for(GameComponent component : components){
+            if(component.getTransparencyLevel() == transparencyLevel){
+                component.render(shader, renderingEngine);
+            }
+        }
 
 		for(GameObject child : children)
-			child.render(shader, renderingEngine);
+			child.render(shader, renderingEngine, transparencyLevel);
 	}
 
 	public Transform getTransform(){
@@ -72,6 +75,7 @@ public class GameObject{
 
 			for(GameObject child : children)
 				child.setEngine(engine);
+
 		}
 	}
 }

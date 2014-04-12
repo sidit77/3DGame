@@ -81,7 +81,7 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normals, vec3 worldPos, vec2
     
     if(diffuseFactor > 0)
     {
-        diffuseColor = vec4(base.color, 1.0) * base.intensity * diffuseFactor;
+        diffuseColor = vec4(base.color, 1) * base.intensity * diffuseFactor;
         
         vec3 directionToEye = normalize(P_eyePos - worldPos);
         //vec3 reflectDirection = normalize(reflect(direction, normal));
@@ -93,7 +93,7 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normals, vec3 worldPos, vec2
         
         if(specularFactor > 0)
         {
-            specularColor = vec4(base.color, 1.0) * specularIntensity * specularFactor;
+            specularColor = vec4(base.color, 1) * specularIntensity * specularFactor;
         }
     }
     

@@ -1,8 +1,6 @@
 package com.base.engine.components.terrain;
 
 import com.base.engine.components.GameComponent;
-import com.base.engine.components.terrain.Terrain;
-import com.base.engine.components.terrain.TerrainGenerator;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.Material;
 import com.base.engine.rendering.RenderingEngine;
@@ -19,7 +17,7 @@ public class EndlessTerrain extends GameComponent{
     Vector3f playerPos = new Vector3f(0,0,0);
     ArrayList<Terrain> terrains = new ArrayList<Terrain>();
 
-    public EndlessTerrain(int size, float res, Material material, TerrainGenerator generator){
+    public EndlessTerrain(int size, float res, Material material, TerrainGenerator generator, boolean transparent){
         this.generator = generator;
         this.size = size;
         this.res = res;

@@ -17,6 +17,7 @@ public class CoreEngine{
     private boolean vsync;
     private boolean resizeable;
     private int framerate;
+    private int samples;
 
     private long lastFrame;
     private long lastFPS;
@@ -25,7 +26,7 @@ public class CoreEngine{
     private boolean wireframe;
     private boolean fullscreen;
 	
-	public CoreEngine(int width, int height, int framerate, boolean vsync, boolean resizeable, Game game){
+	public CoreEngine(int width, int height, int framerate, int samples, boolean vsync, boolean resizeable, Game game){
 
 		this.isRunning = false;
 		this.game = game;
@@ -34,12 +35,13 @@ public class CoreEngine{
         this.framerate = framerate;
         this.resizeable = resizeable;
         this.vsync = vsync;
+        this.samples = samples;
 		game.setEngine(this);
 	}
 
 	public void createWindow(String title){
         WINDOW_TITLE = title;
-		Window.createWindow(width, height, title);
+		Window.createWindow(width, height, samples, title);
         Window.setResizeable(resizeable);
         Window.setVSync(vsync);
 		this.renderingEngine = new RenderingEngine();
