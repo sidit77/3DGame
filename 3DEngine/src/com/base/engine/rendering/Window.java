@@ -2,6 +2,7 @@ package com.base.engine.rendering;
 
 import com.base.engine.core.math.Vector2f;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -23,6 +24,7 @@ public class Window {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.create(new PixelFormat().withSamples(samples));
 			Keyboard.create();
+            Controllers.create();
 			Mouse.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -90,6 +92,7 @@ public class Window {
 		Display.destroy();
 		Keyboard.destroy();
 		Mouse.destroy();
+        Controllers.destroy();
 	}
 	
 	public static boolean isCloseRequested(){

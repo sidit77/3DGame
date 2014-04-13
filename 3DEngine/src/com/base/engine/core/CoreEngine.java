@@ -72,6 +72,7 @@ public class CoreEngine{
 	
 	private void run(){
 		isRunning = true;
+        Input.init();
 		game.init();
 
 		while(isRunning && !Window.isCloseRequested()){

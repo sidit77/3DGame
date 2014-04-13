@@ -1,13 +1,17 @@
 package com.base.engine.core;
 
 import com.base.engine.core.math.Vector2f;
+import org.lwjgl.input.Controller;
+import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.pmw.tinylog.Logger;
 
 public class Input 
 {
-	public static final int NUM_KEYCODES = 256;
-	public static final int NUM_MOUSEBUTTONS = 5;
+	public static int NUM_KEYCODES = 0;
+	public static int NUM_MOUSEBUTTONS = 0;
+    public static int NUM_CONTROLLERBUTTONS = 0;
 	
 	//All these constants come from LWJGL's Keyboard class
 	public static final int KEY_NONE            = 0x00;
@@ -138,18 +142,78 @@ public class Input
 	public static final int KEY_APPS            = 0xDD; /* AppMenu key */
 	public static final int KEY_POWER           = 0xDE;
 	public static final int KEY_SLEEP           = 0xDF;
-	
-	private static boolean[] lastKeys = new boolean[NUM_KEYCODES];
-	private static boolean[] lastMouse = new boolean[NUM_MOUSEBUTTONS];
-	
+
+
+    private static Controller joystick = null;
+
+	private static boolean[] lastKeys;
+	private static boolean[] lastMouse;
+    private static boolean[] lastButton;
+
+    public static void init(){
+        NUM_KEYCODES = Keyboard.getKeyCount();
+        NUM_MOUSEBUTTONS = Mouse.getButtonCount();
+
+        int controller = Controllers.getControllerCount();
+
+        if(controller > 0) {
+
+            Logger.info("INPUT: Found " + controller + " Gamepads");
+
+            for (int i = controller; i > 0; i--) {
+                joystick = Controllers.getController(i - 1);
+                Logger.info("INPUT: > " + joystick.getName());
+            }
+
+            NUM_CONTROLLERBUTTONS = joystick.getButtonCount();
+
+            Logger.info("INPUT: This program will use the: " + joystick.getName());
+
+        }else{
+
+            NUM_CONTROLLERBUTTONS = 1;
+
+            Logger.warn("INPUT: Found no Gamepad");
+        }
+
+        lastKeys = new boolean[NUM_KEYCODES];
+        lastMouse = new boolean[NUM_MOUSEBUTTONS];
+        lastButton = new boolean[NUM_CONTROLLERBUTTONS];
+
+    }
+
 	public static void update(){
+
 		for(int i = 0; i < NUM_KEYCODES; i++)
-			lastKeys[i] = getKey(i);
+            lastKeys[i] = getKey(i);
 		
 		for(int i = 0; i < NUM_MOUSEBUTTONS; i++)
 			lastMouse[i] = getMouse(i);
+
+        for(int i = 0; i < NUM_CONTROLLERBUTTONS; i++)
+            lastButton[i] = getButton(i);
 	}
-	
+
+    public static float getAxis(int axis){
+        return joystick.getAxisValue(axis);
+    }
+
+    public static boolean getButton(int button){
+        return joystick.isButtonPressed(button);
+    }
+
+    public static boolean getButtonDown(int button){
+        return getButton(button) && !lastButton[button];
+    }
+
+    public static boolean getButtonUp(int button){
+        return !getButton(button) && lastButton[button];
+    }
+
+    public static boolean isControllerConnected(){
+        return joystick != null;
+    }
+
 	public static boolean getKey(int keyCode){
 		return Keyboard.isKeyDown(keyCode);
 	}

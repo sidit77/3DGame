@@ -18,7 +18,13 @@ public class TestGame extends Game{
 
 	public void init(){
 
-        getRootObject().addChild(new GameObject().addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)).addComponent(new FreeLook(0.1f)).addComponent(new FreeMove(5)));
+        getRootObject().addChild(new GameObject()
+                .addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f))
+                .addComponent(new FreeLook(0.1f))
+                .addComponent(new FreeMove(5))
+                .addComponent(new ControllerFreeLook(2))
+                .addComponent(new ControllerFreeMove(5))
+        );
 
         GameObject lights  = new GameObject();
 
@@ -92,4 +98,5 @@ public class TestGame extends Game{
 
         getRootObject().addChild(lights);
 	}
+
 }

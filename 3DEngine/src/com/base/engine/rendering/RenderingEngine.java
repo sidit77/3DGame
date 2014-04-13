@@ -60,7 +60,7 @@ public class RenderingEngine{
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            object.render(forwardAmbient, this, trans);
+            object.renderAll(forwardAmbient, this, trans);
 
 
             //GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
@@ -70,7 +70,7 @@ public class RenderingEngine{
 
             for (BaseLight light : lights) {
                 activeLight = light;
-                object.render(light.getShader(), this, trans);
+                object.renderAll(light.getShader(), this, trans);
             }
 
             GL11.glDepthFunc(GL11.GL_LESS);

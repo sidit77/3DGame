@@ -33,34 +33,54 @@ public class GameObject{
 		return this;
 	}
 
-	public void input(float delta){
-		transform.update();
-
-		for(GameComponent component : components)
-			component.input(delta);
-
+	public void inputAll(float delta){
+        input(delta);
 		for(GameObject child : children)
 			child.input(delta);
 	}
 
-	public void update(float delta){
-		for(GameComponent component : components)
-			component.update(delta);
-
+	public void updateAll(float delta){
+        update(delta);
 		for(GameObject child : children)
 			child.update(delta);
 	}
 
-	public void render(Shader shader, RenderingEngine renderingEngine, float transparencyLevel){
-		for(GameComponent component : components){
+	public void renderAll(Shader shader, RenderingEngine renderingEngine, float transparencyLevel){
+        render(shader, renderingEngine, transparencyLevel);
+		for(GameObject child : children)
+			child.render(shader, renderingEngine, transparencyLevel);
+	}
+
+    public void input(float delta){
+        transform.update();
+        for(GameComponent component : components)
+            component.input(delta);
+    }
+
+    public void update(float delta){
+        for(GameComponent component : components)
+            component.update(delta);
+    }
+
+    public void render(Shader shader, RenderingEngine renderingEngine, float transparencyLevel){
+        for(GameComponent component : components){
             if(component.getTransparencyLevel() == transparencyLevel){
                 component.render(shader, renderingEngine);
             }
         }
+    }
 
-		for(GameObject child : children)
-			child.render(shader, renderingEngine, transparencyLevel);
-	}
+    public ArrayList<GameObject> getAllAttached(){
+        ArrayList<GameObject> result = new ArrayList<GameObject>();
+
+        for(GameObject child : children){
+            result.addAll(child.getAllAttached());
+        }
+
+        result.add(this);
+
+        return result;
+    }
 
 	public Transform getTransform(){
 		return transform;
