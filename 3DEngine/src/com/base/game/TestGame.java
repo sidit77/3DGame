@@ -1,65 +1,50 @@
 package com.base.game;
 
-import com.base.engine.components.*;
-import com.base.engine.components.terrain.Terrain;
-import com.base.engine.components.terrain.generators.HeightbasedColorGenerator;
-import com.base.engine.components.terrain.generators.SimplexGenerator;
-import com.base.engine.components.terrain.generators.TestGenerator;
+import com.base.engine.components.GameComponents.*;
+import com.base.engine.components.GameObjects.Camera;
+import com.base.engine.components.GameObjects.DirectionalLight;
+import com.base.engine.components.GameObjects.MeshRenderer;
+import com.base.engine.components.GameObjects.Skybox;
+import com.base.engine.components.GameObjects.terrain.Terrain;
+import com.base.engine.components.GameObjects.terrain.generators.HeightbasedColorGenerator;
+import com.base.engine.components.GameObjects.terrain.generators.SimplexGenerator;
+import com.base.engine.components.GameObjects.terrain.generators.TestGenerator;
 import com.base.engine.core.Game;
-import com.base.engine.core.GameObject;
+import com.base.engine.core.Input;
+import com.base.engine.core.Window;
 import com.base.engine.core.math.Quaternion;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.Material;
 import com.base.engine.rendering.Mesh;
 import com.base.engine.rendering.Texture;
-import com.base.engine.rendering.Window;
+import com.base.engine.sound.Sound;
 
 public class TestGame extends Game{
 
+    private SoundSource monkey;
+    private boolean playing = true;
+    private Terrain water;
+    private boolean isWater = true;
+    private MoveSmoothForwardComponent move;
+    private boolean isMoving = true;
+    private MeshRenderer monkeyModel;
+
 	public void init(){
 
-        getRootObject().addChild(new GameObject()
-                .addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f))
-                .addComponent(new FreeLook(0.1f))
-                .addComponent(new FreeMove(5))
-                .addComponent(new ControllerFreeLook(2))
-                .addComponent(new ControllerFreeMove(5))
+        getRootNode().addChild(
+                new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)
+                        .addComponent(new FreeLook(0.1f))
+                        .addComponent(new FreeMove(5))
+                        .addComponent(new ControllerFreeLook(2))
+                        .addComponent(new ControllerFreeMove(5))
+                        .addComponent(new SoundListener())
         );
 
-        GameObject lights  = new GameObject();
-
-        GameObject dlo = new GameObject();
         DirectionalLight dl = new DirectionalLight(new Vector3f(1,1,1), 0.7f);
-        dlo.addComponent(dl);
         dl.getTransform().setRot(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-45)));
-        lights.addChild(dlo);
+        getRootNode().addChild(dl);
 
-
-        Material modelMaterial = new Material();
-        //modelMaterial.addTexture("diffuse", new Texture("bedrock.png"));
-        //modelMaterial.addTexture("normal", new Texture("bedrock_normal.png"));
-        modelMaterial.addFloat("specularIntensity", 1);
-        modelMaterial.addFloat("specularPower", 8);
-        modelMaterial.addVector3f("diffuseColor", new Vector3f(1,1,0));
-        modelMaterial.addFloat("transparency", 0.6f);
-
-        Material waterMaterial = new Material();
-        waterMaterial.addTexture("diffuse", new Texture("water.png"));
-        //modelMaterial.addTexture("normal", new Texture("bedrock_normal.png"));
-        waterMaterial.addFloat("specularIntensity", 1);
-        waterMaterial.addFloat("specularPower", 8);
-        waterMaterial.addVector3f("diffuseColor", new Vector3f(1,1,1));
-        waterMaterial.addFloat("transparency", 0.7f);
-
-        GameObject model = new GameObject();
-        Mesh modelMesh = new Mesh("monkey3.obj");
-        MeshRenderer meshRenderer = new MeshRenderer(modelMesh, modelMaterial);
-        model.addComponent(meshRenderer);
-        model.addComponent(new LookAtComponent());
-        model.addComponent(new MoveSmoothForwardComponent(0.07f, 8f));
-        model.getTransform().setPos(new Vector3f(1,-2,2));
-        getRootObject().addChild(model);
-
+        getRootNode().addChild(new Skybox(575, 0.5f, new Texture("skybox/Above_The_Sea.png")));
 
         Material floorMaterial = new Material();
             floorMaterial.addTexture("diffuse", new Texture("sand.png"));
@@ -81,22 +66,68 @@ public class TestGame extends Game{
             floorMaterial.addFloat("specularPower", 8);
             floorMaterial.addFloat("transparency", 1f);
 
-        GameObject terrain = new GameObject();
-        Terrain t = new Terrain(512, 1, floorMaterial, new SimplexGenerator(1000, 0.35, (int) System.currentTimeMillis(), 150), new HeightbasedColorGenerator());//("height2.jpg", 8, 1, floorMaterial);//
-        terrain.addComponent(t);
+
+        Material modelMaterial = new Material();
+            modelMaterial.addFloat("specularIntensity", 1);
+            modelMaterial.addFloat("specularPower", 8);
+            modelMaterial.addVector3f("diffuseColor", new Vector3f(1,1,0));
+            modelMaterial.addFloat("transparency", 0.6f);
+
+        Material waterMaterial = new Material();
+            waterMaterial.addTexture("diffuse", new Texture("water.png"));
+            waterMaterial.addFloat("specularIntensity", 1);
+            waterMaterial.addFloat("specularPower", 8);
+            waterMaterial.addVector3f("diffuseColor", new Vector3f(1,1,1));
+            waterMaterial.addFloat("transparency", 0.7f);
+
+
+        monkey = new SoundSource(new Sound("haggle.ogg")).setLooping(true);
+        move = new MoveSmoothForwardComponent(0.07f, 8f);
+
+        Mesh modelMesh = new Mesh("monkey3.obj");
+        monkeyModel = new MeshRenderer(modelMesh, modelMaterial);
+        monkeyModel.addComponent(new LookAtComponent());
+        monkeyModel.addComponent(move);
+        monkeyModel.addComponent(monkey.play());
+        monkeyModel.getTransform().setPos(new Vector3f(1, -2, 2));
+        getRootNode().addChild(monkeyModel);
+
+        Terrain terrain = new Terrain(512, 1, floorMaterial, new SimplexGenerator(1000, 0.35, (int) System.currentTimeMillis(), 150), new HeightbasedColorGenerator());//("height2.jpg", 8, 1, floorMaterial);//
         terrain.getTransform().setPos(new Vector3f(-256, -20, -256));
+        getRootNode().addChild(terrain);
 
-        getRootObject().addChild(terrain);
-
-
-        GameObject water = new GameObject();
-        Terrain w = new Terrain(576, 64, waterMaterial, new TestGenerator(), new TestGenerator());//("height2.jpg", 8, 1, floorMaterial);//
-        water.addComponent(w);
+        water = new Terrain(576, 64, waterMaterial, new TestGenerator(), new TestGenerator());//("height2.jpg", 8, 1, floorMaterial);//
         water.getTransform().setPos(new Vector3f(-256, -45, -256));
+        getRootNode().addChild(water);
 
-        getRootObject().addChild(water);
-
-        getRootObject().addChild(lights);
 	}
 
+    @Override
+    public void input(float delta) {
+        super.input(delta);
+        if(Input.getKeyDown(Input.KEY_F3) || Input.getButtonDown(5)){
+            if(playing){
+                monkey.pause();
+            }else{
+                monkey.play();
+            }
+            playing = !playing;
+        }
+        if(Input.getKeyDown(Input.KEY_F4)){
+            if(isWater){
+                getRootNode().removeChild(water);
+            }else{
+                getRootNode().addChild(water);
+            }
+            isWater = !isWater;
+        }
+        if(Input.getKeyDown(Input.KEY_F5)){
+            if(isMoving){
+                monkeyModel.removeComponent(move);
+            }else{
+                monkeyModel.addComponent(move);
+            }
+            isMoving = !isMoving;
+        }
+    }
 }

@@ -144,6 +144,16 @@ public class Input
 	public static final int KEY_SLEEP           = 0xDF;
 
 
+    public static int AXIS_YAXIS = 20;
+    public static int AXIS_XAXIS = 20;
+    public static int AXIS_ZAXIS = 20;
+    public static int AXIS_YROTATION = 20;
+    public static int AXIS_XROTATION = 20;
+    public static int AXIS_ZROTATION = 20;
+    public static int AXIS_DIAL = 20;
+    public static int AXIS_SLIDER = 20;
+
+
     private static Controller joystick = null;
 
 	private static boolean[] lastKeys;
@@ -166,6 +176,31 @@ public class Input
             }
 
             NUM_CONTROLLERBUTTONS = joystick.getButtonCount();
+
+            for(int i = 0; i <= joystick.getAxisCount() - 1; i++){
+
+                String name = joystick.getAxisName(i);
+
+                if(name.equalsIgnoreCase("x axis")){
+                    AXIS_XAXIS = i;
+                }else if(name.equalsIgnoreCase("y axis")){
+                    AXIS_YAXIS = i;
+                }else if(name.equalsIgnoreCase("z axis")){
+                    AXIS_ZAXIS = i;
+                }else if(name.equalsIgnoreCase("x rotation")){
+                    AXIS_XROTATION = i;
+                }else if(name.equalsIgnoreCase("y rotation")){
+                    AXIS_YROTATION = i;
+                }else if(name.equalsIgnoreCase("z rotation")){
+                    AXIS_ZROTATION = i;
+                }else if(name.equalsIgnoreCase("dial")){
+                    AXIS_DIAL = i;
+                }else if(name.equalsIgnoreCase("slider")){
+                    AXIS_SLIDER = i;
+                }
+
+            }
+
 
             Logger.info("INPUT: This program will use the: " + joystick.getName());
 
@@ -190,16 +225,24 @@ public class Input
 		for(int i = 0; i < NUM_MOUSEBUTTONS; i++)
 			lastMouse[i] = getMouse(i);
 
-        for(int i = 0; i < NUM_CONTROLLERBUTTONS; i++)
+
+        for (int i = 0; i < NUM_CONTROLLERBUTTONS; i++)
             lastButton[i] = getButton(i);
+
 	}
 
     public static float getAxis(int axis){
-        return joystick.getAxisValue(axis);
+        if(isControllerConnected()) {
+            return joystick.getAxisValue(axis);
+        }
+        return 0;
     }
 
     public static boolean getButton(int button){
-        return joystick.isButtonPressed(button);
+        if(isControllerConnected()) {
+            return joystick.isButtonPressed(button);
+        }
+        return false;
     }
 
     public static boolean getButtonDown(int button){
@@ -227,7 +270,7 @@ public class Input
 	}
 	
 	public static boolean getMouse(int mouseButton){
-		return Mouse.isButtonDown(mouseButton);
+         return Mouse.isButtonDown(mouseButton);
 	}
 	
 	public static boolean getMouseDown(int mouseButton){

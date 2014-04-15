@@ -1,14 +1,16 @@
 package com.base.engine.rendering;
 
-import com.base.engine.components.BaseLight;
-import com.base.engine.components.DirectionalLight;
-import com.base.engine.components.PointLight;
-import com.base.engine.components.SpotLight;
-import com.base.engine.core.Transform;
+import com.base.engine.components.GameObjects.BaseLight;
+import com.base.engine.components.GameObjects.DirectionalLight;
+import com.base.engine.components.GameObjects.PointLight;
+import com.base.engine.components.GameObjects.SpotLight;
+import com.base.engine.core.RenderingEngine;
+import com.base.engine.core.szenegraph.Transform;
 import com.base.engine.core.Util;
 import com.base.engine.core.math.Matrix4f;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.resourceManagement.ShaderResource;
+import org.pmw.tinylog.Logger;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -231,9 +233,8 @@ public class Shader{
 		int uniformLocation = glGetUniformLocation(resource.getProgram(), uniformName);
 
 		if(uniformLocation == 0xFFFFFFFF){
-			System.err.println("Error: Could not find uniform: " + uniformName);
+			Logger.warn("SHADER: Could not find uniform: " + uniformName);
 			new Exception().printStackTrace();
-			System.exit(1);
 		}
 
 		resource.getUniforms().put(uniformName, uniformLocation);
@@ -260,7 +261,7 @@ public class Shader{
 		
 		if(glGetProgrami(resource.getProgram(), GL_LINK_STATUS) == 0)
 		{
-			System.err.println(glGetProgramInfoLog(resource.getProgram(), 1024));
+			Logger.error(glGetProgramInfoLog(resource.getProgram(), 1024));
 			System.exit(1);
 		}
 		
@@ -268,7 +269,7 @@ public class Shader{
 		
 		if(glGetProgrami(resource.getProgram(), GL_VALIDATE_STATUS) == 0)
 		{
-			System.err.println(glGetProgramInfoLog(resource.getProgram(), 1024));
+			Logger.error(glGetProgramInfoLog(resource.getProgram(), 1024));
 			System.exit(1);
 		}
 	}
@@ -278,7 +279,7 @@ public class Shader{
 		
 		if(shader == 0)
 		{
-			System.err.println("Shader creation failed: Could not find valid memory location when adding shader");
+			Logger.error("Shader creation failed: Could not find valid memory location when adding shader");
 			System.exit(1);
 		}
 		
@@ -287,7 +288,7 @@ public class Shader{
 		
 		if(glGetShaderi(shader, GL_COMPILE_STATUS) == 0)
 		{
-			System.err.println(glGetShaderInfoLog(shader, 1024));
+			Logger.error(glGetShaderInfoLog(shader, 1024));
 			System.exit(1);
 		}
 		
@@ -318,7 +319,7 @@ public class Shader{
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			Logger.error(e);
 			System.exit(1);
 		}
 		

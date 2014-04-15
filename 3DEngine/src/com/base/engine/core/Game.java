@@ -1,32 +1,32 @@
 package com.base.engine.core;
 
-import com.base.engine.rendering.RenderingEngine;
+import com.base.engine.components.GameComponents.Node;
 
 public abstract class Game{
 
-	private GameObject root = new GameObject();
+	private Node root = new Node();
 
 	public void init() {
 
     }
 
 	public void input(float delta){
-		getRootObject().inputAll(delta);
+		getRootNode().input(delta);
 	}
 
 	public void update(float delta){
-		getRootObject().updateAll(delta);
+		getRootNode().update(delta);
 	}
 
 	public void render(RenderingEngine renderingEngine){
-        renderingEngine.render(getRootObject());
+        renderingEngine.render(getRootNode());
 	}
 
-	public GameObject getRootObject(){
+	public Node getRootNode(){
 		return root;
 	}
 
 	public void setEngine(CoreEngine engine) {
-        getRootObject().setEngine(engine);
+        getRootNode().setEngine(engine);
     }
 }

@@ -1,11 +1,13 @@
 package com.base.game;
 
-import com.base.engine.components.*;
-import com.base.engine.components.terrain.Terrain;
-import com.base.engine.components.terrain.generators.TestGenerator;
+import com.base.engine.components.GameObjects.*;
+import com.base.engine.components.GameComponents.*;
+import com.base.engine.components.GameObjects.terrain.Terrain;
+import com.base.engine.components.GameObjects.terrain.generators.TestGenerator;
 import com.base.engine.core.Game;
-import com.base.engine.core.GameObject;
 import com.base.engine.core.Input;
+import com.base.engine.core.Window;
+import com.base.engine.components.GameComponents.Node;
 import com.base.engine.core.math.Quaternion;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.*;
@@ -14,28 +16,29 @@ public class TestGame2 extends Game{
     Material floorMaterial = new Material();
 
     public void init(){
-        getRootObject().addChild(new GameObject().addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)));
 
-        GameObject lights  = new GameObject();
+        getRootNode().addChild(
+                new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)
+                        .addComponent(new FreeLook(0.1f))
+                        .addComponent(new FreeMove(5))
+                        .addComponent(new ControllerFreeLook(2))
+                        .addComponent(new ControllerFreeMove(5))
+        );
 
-        GameObject dlo = new GameObject();
+        Node lights  = new Node();
+
         DirectionalLight dl = new DirectionalLight(new Vector3f(1,1,1), 0.7f);
-        dlo.addComponent(dl);
         dl.getTransform().setRot(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-20)));
-        lights.addChild(dlo);
+        lights.addChild(dl);
 
-        GameObject plo = new GameObject();
         PointLight pl = new PointLight(new Vector3f(0,1,1), 0.9f, new Attenuation(0,0,1));
-        plo.addComponent(pl);
         pl.getTransform().setPos(new Vector3f(0, -3.5f, 0));
-        lights.addChild(plo);
+        lights.addChild(pl);
 
-        GameObject slo = new GameObject();
         SpotLight sl = new SpotLight(new Vector3f(1,1,1), 0.7f, new Attenuation(0,0,0.1f), 0.7f);
-        slo.addComponent(sl);
         sl.getTransform().setPos(new Vector3f(2, -3.5f, 0));
         sl.getTransform().setRot(new Quaternion(new Vector3f(0,1,0), (float)Math.toRadians(180)));
-        lights.addChild(slo);
+        lights.addChild(sl);
 
         floorMaterial.addTexture("normal", new Texture("brick_normal.png"));
         floorMaterial.addTexture("diffuse", new Texture("brick.png"));
@@ -45,29 +48,26 @@ public class TestGame2 extends Game{
         floorMaterial.addFloat("transparency", 1f);
 
         Material modelMaterial = new Material();
-        //modelMaterial.addTexture("diffuse", new Texture("bedrock.png"));
-        //modelMaterial.addTexture("normal", new Texture("bedrock_normal.png"));
         modelMaterial.addFloat("specularIntensity", 1);
         modelMaterial.addFloat("specularPower", 8);
         modelMaterial.addVector3f("diffuseColor", new Vector3f(1,1,0));
         modelMaterial.addFloat("transparency", 0.4f);
 
-        GameObject model = new GameObject();
         Mesh modelMesh = new Mesh("monkey3.obj");
         MeshRenderer meshRenderer = new MeshRenderer(modelMesh, modelMaterial);
-        model.addComponent(meshRenderer);
-        model.addComponent(new LookAtComponent());
-        model.addComponent(new MoveSmoothForwardComponent(0.07f, 5f));
-        model.getTransform().setPos(new Vector3f(1,-2,2));
-        getRootObject().addChild(model);
+        meshRenderer.addComponent(new LookAtComponent());
+        meshRenderer.addComponent(new MoveSmoothForwardComponent(0.07f, 5f));
+        meshRenderer.getTransform().setPos(new Vector3f(1,-2,2));
+        getRootNode().addChild(meshRenderer);
 
-        GameObject terrain = new GameObject();
-        Terrain t = new Terrain(60, 5, floorMaterial, new TestGenerator(), new TestGenerator());
-        terrain.addComponent(t);
+        Terrain terrain = new Terrain(60, 5, floorMaterial, new TestGenerator(), new TestGenerator());
         terrain.getTransform().setPos(new Vector3f(-30, -4, -30));
-        getRootObject().addChild(terrain);
+        getRootNode().addChild(terrain);
 
-        getRootObject().addChild(lights);
+        Skybox skybox = new Skybox(400, 0.2f, new Texture("skybox/Above_The_Sea.jpg"));
+        getRootNode().addChild(skybox);
+
+        getRootNode().addChild(lights);
 
     }
 
