@@ -5,10 +5,10 @@ import com.base.engine.components.GameObjects.DirectionalLight;
 import com.base.engine.components.GameObjects.PointLight;
 import com.base.engine.components.GameObjects.SpotLight;
 import com.base.engine.core.RenderingEngine;
-import com.base.engine.core.szenegraph.Transform;
 import com.base.engine.core.Util;
 import com.base.engine.core.math.Matrix4f;
 import com.base.engine.core.math.Vector3f;
+import com.base.engine.core.szenegraph.Transform;
 import com.base.engine.rendering.resourceManagement.ShaderResource;
 import org.pmw.tinylog.Logger;
 
@@ -367,4 +367,8 @@ public class Shader{
 		setUniform(uniformName + ".direction", spotLight.getDirection());
 		setUniformf(uniformName + ".cutoff", spotLight.getCutoff());
 	}
+
+    public int getUniform(String name){
+        return resource.getUniforms().get(name);
+    }
 }

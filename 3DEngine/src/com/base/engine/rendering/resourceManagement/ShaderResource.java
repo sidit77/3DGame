@@ -1,5 +1,7 @@
 package com.base.engine.rendering.resourceManagement;
 
+import org.pmw.tinylog.Logger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,7 +22,7 @@ public class ShaderResource{
 
 		if(program == 0)
 		{
-			System.err.println("Shader creation failed: Could not find valid memory location in constructor");
+			Logger.error("Shader creation failed: Could not find valid memory location in constructor");
 			System.exit(1);
 		}
 

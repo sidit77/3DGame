@@ -87,6 +87,8 @@ public class CoreEngine{
                 Logger.info("Fullscreen mode was set to " + !fullscreen);
                 GL11.glViewport(0,0,Window.getWidth(), Window.getHeight());
                 renderingEngine.getMainCamera().setAspect((float) Window.getWidth() / (float) Window.getHeight());
+                renderingEngine.getFrameBuffer()[0].reshape(Window.getWidth(), Window.getHeight());
+                renderingEngine.getFrameBuffer()[1].reshape(Window.getWidth(), Window.getHeight());
                 fullscreen = !fullscreen;
             }
 			game.input((float)delta/1000);

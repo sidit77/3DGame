@@ -2,14 +2,17 @@ package com.base.engine.core;
 
 import com.base.engine.components.GameObjects.BaseLight;
 import com.base.engine.components.GameObjects.Camera;
+import com.base.engine.components.GameObjects.PostProgressEffect;
 import com.base.engine.core.szenegraph.GameObject;
 import com.base.engine.core.szenegraph.Transform;
 import com.base.engine.core.math.Vector3f;
+import com.base.engine.rendering.FrameBuffer;
 import com.base.engine.rendering.Material;
 import com.base.engine.rendering.Shader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 
 public class RenderingEngine{
@@ -20,9 +23,20 @@ public class RenderingEngine{
 	private Shader forwardAmbient;
 	private Camera mainCamera;
     private Vector3f ambientLight = new Vector3f(0.1f, 0.1f, 0.1f);
+    private boolean wireframeEnabled = false;
+
+    private PostProgressEffect fallBack;
+    private FrameBuffer[] frameBuffer = new FrameBuffer[2];
 
 	public RenderingEngine(){
-		super();
+		frameBuffer[0] = new FrameBuffer(Window.getWidth(), Window.getHeight());
+        frameBuffer[1] = new FrameBuffer(Window.getWidth(), Window.getHeight());
+        fallBack = new PostProgressEffect("post/Null.glsl");
+
+        //postProgressEffects.add(new PostProgressEffect("post/Null.glsl"));
+        //postProgressEffects.add(new PostProgressEffect("post/Invert.glsl"));
+        //postProgressEffects.add(new PostProgressEffect("post/Wave.glsl"));
+        //postProgressEffects.add(new PostProgressEffect("post/Saturation.glsl"));
 
 		forwardAmbient = new Shader("forward/AmbientLightVertexShader.glsl", "forward/AmbientLightFragmentShader.glsl");
 
@@ -43,17 +57,44 @@ public class RenderingEngine{
 	}
 
     public void setWireframe(boolean enabled){
-        if(!enabled){
-            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-            GL11.glEnable(GL11.GL_CULL_FACE);
+        wireframeEnabled = enabled;
+    }
+
+    public boolean isWireframeEnabled() {
+        return wireframeEnabled;
+    }
+
+    public void render(GameObject object, AbstractList<PostProgressEffect> postProgressEffects){
+
+        renderToFrameBuffer(object);
+
+        if(!postProgressEffects.isEmpty()) {
+            boolean firstBuffer = false;
+            for (int i = postProgressEffects.size() - 1; i > 0; i--) {
+                frameBuffer[firstBuffer ? 0 : 1].bind();
+                GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+                postProgressEffects.get(i).renderFrameBuffer(frameBuffer[firstBuffer ? 1 : 0]);
+                frameBuffer[firstBuffer ? 0 : 1].unbind();
+                firstBuffer = !firstBuffer;
+            }
+
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            postProgressEffects.get(0).renderFrameBuffer(frameBuffer[firstBuffer ? 1 : 0]);
         }else{
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            fallBack.renderFrameBuffer(frameBuffer[0]);
+        }
+	}
+
+    private void renderToFrameBuffer(GameObject object){
+        frameBuffer[0].bind();
+
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
+        if(wireframeEnabled){
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
             GL11.glDisable(GL11.GL_CULL_FACE);
         }
-    }
-
-	public void render(GameObject object){
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
         for(int i = 10; i > 0; i -= 1) {
 
@@ -64,8 +105,6 @@ public class RenderingEngine{
 
             object.render(forwardAmbient, this, trans);
 
-
-            //GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             GL11.glDepthMask(false);
             GL11.glDepthFunc(GL11.GL_EQUAL);
@@ -80,7 +119,13 @@ public class RenderingEngine{
             GL11.glDisable(GL11.GL_BLEND);
         }
 
-	}
+        if(wireframeEnabled){
+            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+            GL11.glEnable(GL11.GL_CULL_FACE);
+        }
+
+        frameBuffer[0].unbind();
+    }
 
 	public static String getOpenGLVersion(){
         String[] version = GL11.glGetString(GL11.GL_VERSION).split("\\.");
@@ -118,5 +163,9 @@ public class RenderingEngine{
 
     public void setAmbientLight(Vector3f ambientLight) {
         this.ambientLight = ambientLight;
+    }
+
+    public FrameBuffer[] getFrameBuffer() {
+        return frameBuffer;
     }
 }

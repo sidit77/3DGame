@@ -1,10 +1,14 @@
 package com.base.engine.core;
 
 import com.base.engine.components.GameComponents.Node;
+import com.base.engine.components.GameObjects.PostProgressEffect;
+
+import java.util.ArrayList;
 
 public abstract class Game{
 
 	private Node root = new Node();
+    private ArrayList<PostProgressEffect> postProgressEffects = new ArrayList<PostProgressEffect>();
 
 	public void init() {
 
@@ -19,7 +23,7 @@ public abstract class Game{
 	}
 
 	public void render(RenderingEngine renderingEngine){
-        renderingEngine.render(getRootNode());
+        renderingEngine.render(getRootNode(), postProgressEffects);
 	}
 
 	public Node getRootNode(){
@@ -29,4 +33,13 @@ public abstract class Game{
 	public void setEngine(CoreEngine engine) {
         getRootNode().setEngine(engine);
     }
+
+    public void addPostProgressEffect(PostProgressEffect effect){
+        postProgressEffects.add(effect);
+    }
+
+    public void removePostProgressEffect(PostProgressEffect effect){
+        postProgressEffects.remove(effect);
+    }
+
 }

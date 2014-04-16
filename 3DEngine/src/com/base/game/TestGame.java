@@ -4,7 +4,6 @@ import com.base.engine.components.GameComponents.*;
 import com.base.engine.components.GameObjects.Camera;
 import com.base.engine.components.GameObjects.DirectionalLight;
 import com.base.engine.components.GameObjects.MeshRenderer;
-import com.base.engine.components.GameObjects.Skybox;
 import com.base.engine.components.GameObjects.terrain.Terrain;
 import com.base.engine.components.GameObjects.terrain.generators.HeightbasedColorGenerator;
 import com.base.engine.components.GameObjects.terrain.generators.SimplexGenerator;
@@ -31,6 +30,8 @@ public class TestGame extends Game{
 
 	public void init(){
 
+        //addPostProgressEffect(new PostProgressEffect("post/Wave.glsl"));
+
         getRootNode().addChild(
                 new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)
                         .addComponent(new FreeLook(0.1f))
@@ -44,7 +45,7 @@ public class TestGame extends Game{
         dl.getTransform().setRot(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-45)));
         getRootNode().addChild(dl);
 
-        getRootNode().addChild(new Skybox(575, 0.5f, new Texture("skybox/Above_The_Sea.png")));
+        //getRootNode().addChild(new Skybox(575, 0.5f, new Texture("skybox/Above_The_Sea.png")));
 
         Material floorMaterial = new Material();
             floorMaterial.addTexture("diffuse", new Texture("sand.png"));
@@ -81,7 +82,7 @@ public class TestGame extends Game{
             waterMaterial.addFloat("transparency", 0.7f);
 
 
-        monkey = new SoundSource(new Sound("haggle.ogg")).setLooping(true);
+        monkey = new SoundSource(new Sound("haggle.ogg")).setLooping(true).setGain(0.3f);
         move = new MoveSmoothForwardComponent(0.07f, 8f);
 
         Mesh modelMesh = new Mesh("monkey3.obj");
